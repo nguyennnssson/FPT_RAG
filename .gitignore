@@ -1,0 +1,42 @@
+# Secrets and machine-local configuration
+.env
+**/.env
+*.key
+*.pem
+*.pfx
+
+# Private corpora, runtime state, and backups
+Mockdata/
+Docs.zip
+tmp/
+backend/data/
+backend/data_demo/
+
+# Installed dependencies
+backend/.venv/
+backend/venv/
+frontend/node_modules/
+
+# Generated output and caches
+frontend/dist/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+*.log
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+*.pkl
+*.pickle
+*.bin
+*.tsbuildinfo
+~$*
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+

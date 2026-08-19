@@ -1,0 +1,32 @@
+.container { position: relative; flex: 1; min-height: 0; display: flex; }
+.scroll { flex: 1; min-height: 0; overflow-y: auto; }
+.thread {
+ max-width: var(--measure);
+ margin: 0 auto;
+ padding: var(--space-10) var(--space-6) 180px;
+}
+.activeMatch {
+ margin: 0 -10px;
+ padding: 0 10px;
+ border-radius: var(--radius);
+ box-shadow: inset 3px 0 0 #F59E0B;
+ background: color-mix(in srgb, var(--color-highlight) 28%, transparent);
+}
+:global(::highlight(chat-search)) { background: #FEF3C7; color: inherit; }
+:global(::highlight(chat-search-active)) { background: #FBBF24; color: #111827; }
+.scrollButton {
+ position: absolute;
+ left: 50%;
+ bottom: 140px;
+ transform: translateX(-50%);
+ width: 36px; height: 36px;
+ display: grid; place-items: center;
+ border: 1px solid var(--color-border);
+ border-radius: var(--radius-pill);
+ background: var(--color-surface);
+ color: var(--color-text);
+ box-shadow: var(--shadow-sm);
+ cursor: pointer;
+ transition: background var(--dur-hover) var(--ease);
+}
+.scrollButton:hover { background: var(--color-hover); }

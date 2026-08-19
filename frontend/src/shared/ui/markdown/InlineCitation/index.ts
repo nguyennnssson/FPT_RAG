@@ -1,0 +1,1 @@
+export { InlineCitation } from './InlineCitation';

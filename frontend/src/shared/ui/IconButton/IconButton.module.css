@@ -1,0 +1,14 @@
+.iconBtn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-2);
+  cursor: pointer;
+  transition: background var(--dur-hover) var(--ease), color var(--dur-hover) var(--ease);
+}
+.iconBtn:hover:not(:disabled) { background: var(--color-hover); color: var(--color-text); }
+.iconBtn:disabled { opacity: .4; cursor: default; }

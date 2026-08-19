@@ -1,0 +1,53 @@
+.help {
+ margin: 0 0 16px;
+ color: var(--color-text-2);
+ line-height: 1.5;
+}
+.form { display: grid; grid-template-columns: 120px 1fr auto; gap: 8px; }
+.form select, .form input {
+ min-width: 0;
+ border: 1px solid var(--color-border);
+ border-radius: var(--radius);
+ background: var(--color-surface);
+ color: var(--color-text);
+ padding: 9px 10px;
+ font: inherit;
+}
+.error { color: var(--color-danger, #b42318); font-size: 13px; }
+.empty {
+ min-height: 100px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 8px;
+ color: var(--color-text-2);
+}
+.list { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 8px; }
+.list li {
+ display: flex;
+ align-items: flex-start;
+ gap: 12px;
+ border: 1px solid var(--color-border);
+ border-radius: var(--radius);
+ padding: 12px;
+}
+.list li > div { flex: 1; min-width: 0; }
+.list p { margin: 5px 0; overflow-wrap: anywhere; }
+.list small { color: var(--color-text-2); }
+.list button {
+ border: 0;
+ background: transparent;
+ color: var(--color-text-2);
+ cursor: pointer;
+ padding: 5px;
+}
+.list button:hover { color: var(--color-danger, #b42318); }
+.kind {
+ font-size: 11px;
+ font-weight: 600;
+ text-transform: uppercase;
+ color: var(--color-primary);
+}
+@media (max-width: 620px) {
+ .form { grid-template-columns: 1fr; }
+}

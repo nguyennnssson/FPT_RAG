@@ -1,0 +1,51 @@
+.app { display: flex; height: 100vh; overflow: hidden; }
+.sidebar {
+ width: var(--sidebar-w);
+ flex: 0 0 var(--sidebar-w);
+ background: var(--color-surface);
+ overflow: hidden;
+ transition:
+   width var(--dur-fade) var(--ease),
+   flex-basis var(--dur-fade) var(--ease);
+}
+.sidebar[data-collapsed='true'] {
+ width: 0;
+ flex-basis: 0;
+}
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.main[data-view='documents'] > header {
+ display: none;
+}
+.scrim { display: none; }
+
+/* Tablet: keep sidebar but let content breathe */
+@media (max-width: 1024px) {
+ .sidebar { width: 220px; flex-basis: 220px; }
+}
+
+/* Mobile: sidebar becomes an off-canvas drawer */
+@media (max-width: 768px) {
+ .sidebar {
+   position: fixed;
+   top: 0; left: 0; bottom: 0;
+   width: 220px;
+   flex-basis: 220px;
+   z-index: var(--z-drawer);
+   transform: translateX(-100%);
+   transition: transform var(--dur-fade) var(--ease);
+   box-shadow: var(--shadow-md);
+ }
+ .sidebar[data-collapsed='true'] {
+   width: 220px;
+   flex-basis: 220px;
+ }
+ .sidebar[data-open='true'] { transform: translateX(0); }
+ .scrim {
+   position: fixed; inset: 0;
+   background: rgba(17, 24, 39, .28);
+   opacity: 0; pointer-events: none;
+   transition: opacity var(--dur-fade) var(--ease);
+   z-index: calc(var(--z-drawer) - 1);
+ }
+ .scrim[data-open='true'] { display: block; opacity: 1; pointer-events: auto; }
+}

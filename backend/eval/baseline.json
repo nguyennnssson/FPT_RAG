@@ -1,0 +1,14 @@
+{
+  "primary_metric": "ndcg@5",
+  "metrics": {
+    "recall@1": 1.0,
+    "recall@3": 1.0,
+    "recall@5": 1.0,
+    "mrr": 1.0,
+    "ndcg@5": 1.0,
+    "abstention_accuracy": 1.0,
+    "citation_valid_rate": 1.0,
+    "leaks": 0,
+    "n_queries": 7
+  }
+}

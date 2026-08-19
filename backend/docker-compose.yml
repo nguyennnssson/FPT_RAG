@@ -1,0 +1,65 @@
+# FPT RAG backend — one-command local stack: nginx -> api.
+#
+#   cp .env.example .env      # then edit
+#   docker compose up --build
+#
+# Then: http://localhost:8080  (through nginx)  or  http://localhost:8000  (api direct)
+#
+# For a guardrailed VDI without model downloads, build the slim image:
+#   REQUIREMENTS=requirements-vdi-minimal.txt docker compose up --build
+#
+# PostgreSQL stores durable conversations, messages, sources, and long-term
+# user memories. Redis remains optional: answer caching is in-process and the
+# short follow-up condenser uses SQLite inside /data.
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-fpt_rag}
+      POSTGRES_USER: ${POSTGRES_USER:-fpt_rag}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fpt_rag_local_change_me}
+    volumes:
+      - rag-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  api:
+    build:
+      context: .
+      args:
+        REQUIREMENTS: ${REQUIREMENTS:-requirements.txt}
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      RAG_DATA_DIR: /data
+      RAG_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-fpt_rag}:${POSTGRES_PASSWORD:-fpt_rag_local_change_me}@postgres:5432/${POSTGRES_DB:-fpt_rag}
+      RAG_AUTO_MIGRATE: "false"
+    volumes:
+      - rag-data:/data
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["sh", "-c", "alembic upgrade head && uvicorn api.main:app --host 0.0.0.0 --port 8000"]
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+      # - "443:443"   # enable after mounting TLS certs in nginx.conf
+
+volumes:
+  rag-data:
+  rag-postgres:

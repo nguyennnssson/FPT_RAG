@@ -1,0 +1,65 @@
+.header {
+ position: relative;
+ height: var(--header-h);
+ flex: 0 0 var(--header-h);
+ display: flex;
+ align-items: center;
+ gap: var(--space-2);
+ padding: 0 18px;
+ background: var(--color-surface);
+ z-index: var(--z-header);
+}
+.menu { display: none; }
+.menuVisible { display: grid; }
+.titleWrap { position: relative; min-width: 0; }
+.title {
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ padding: 6px 8px;
+ margin-left: -8px;
+ border: none;
+ background: transparent;
+ font-size: 15px;
+ font-weight: 600;
+ color: var(--color-text);
+ border-radius: var(--radius-sm);
+ cursor: pointer;
+ transition: background var(--dur-hover) var(--ease);
+}
+.title span { max-width: min(380px, 35vw); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.title:hover { background: var(--color-hover); }
+.chevron { color: var(--color-text-2); transition: transform var(--dur-hover) var(--ease); }
+.chevronOpen { transform: rotate(180deg); }
+.spacer { flex: 1; }
+.chatSearch {
+ display: flex; align-items: center; gap: 5px; width: min(420px, 50vw); height: 38px;
+ padding: 0 5px 0 10px; border: 1px solid var(--color-border-strong);
+ border-radius: 10px; background: var(--color-surface); color: var(--color-text-2);
+ box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+.chatSearch input {
+ flex: 1; min-width: 80px; border: 0; outline: 0; background: transparent;
+ color: var(--color-text); font: inherit; font-size: 13px;
+}
+.chatSearch input::placeholder { color: #9CA3AF; }
+.matchCount { flex: 0 0 auto; color: var(--color-text-2); font-size: 11px; white-space: nowrap; }
+.chatSearch button {
+ width: 27px; height: 27px; display: grid; place-items: center; padding: 0;
+ border: 0; border-radius: 7px; background: transparent; color: var(--color-text-2); cursor: pointer;
+}
+.chatSearch button:hover:not(:disabled) { background: var(--color-hover); color: var(--color-text); }
+.chatSearch button:disabled { opacity: .35; cursor: default; }
+.avatarBtn {
+ display: inline-flex;
+ padding: 0;
+ border: none;
+ background: transparent;
+ border-radius: var(--radius-pill);
+ cursor: pointer;
+}
+@media (max-width: 768px) {
+ .menu { display: grid; }
+ .title span { max-width: 28vw; }
+ .chatSearch { position: absolute; left: 54px; right: 58px; width: auto; z-index: 2; }
+}

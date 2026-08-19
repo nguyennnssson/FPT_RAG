@@ -1,0 +1,16 @@
+# Keep the image small and reproducible.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+data/
+*.pkl
+models/
+.cache/
+.env
+.git/
+.gitignore
+tests/
+*.md
+!README.md

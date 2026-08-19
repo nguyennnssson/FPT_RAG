@@ -1,0 +1,80 @@
+.wrap {
+ position: absolute;
+ left: 0; right: 0; bottom: 0;
+ z-index: var(--z-composer);
+ padding: var(--space-4) var(--space-6);
+ background: linear-gradient(to top, var(--color-bg) 70%, transparent);
+}
+.inner { max-width: var(--measure); margin: 0 auto; }
+.composer {
+ display: flex;
+ flex-direction: column;
+ gap: var(--space-2);
+ padding: 12px 14px 10px;
+ background: var(--color-surface);
+ border: 1px solid var(--color-border);
+ border-radius: 24px;
+ transition: border-color var(--dur-hover) var(--ease);
+}
+.composer:focus-within { border-color: var(--color-border-strong); }
+.composer.dragging { border-color: var(--color-primary); background: var(--color-primary-soft); }
+.attachments { display: flex; gap: 8px; padding: 2px 2px 5px; overflow-x: auto; }
+.attachment {
+ position: relative; min-width: 210px; max-width: 290px; display: grid;
+ grid-template-columns: 38px minmax(0, 1fr) 16px; align-items: center; gap: 8px;
+ padding: 7px 28px 7px 7px; border: 1px solid var(--color-border);
+ border-radius: 11px; background: var(--color-bg);
+}
+.attachmentFailed { border-color: color-mix(in srgb, var(--color-danger) 40%, var(--color-border)); }
+.attachment img, .fileThumb {
+ width: 38px; height: 38px; border-radius: 8px; object-fit: cover;
+ background: var(--color-primary-soft); color: var(--color-primary);
+}
+.fileThumb { display: grid; place-items: center; }
+.attachmentInfo { min-width: 0; display: grid; gap: 1px; }
+.attachmentInfo strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.attachmentInfo small {
+ overflow: hidden; color: var(--color-text-2); font-size: 10.5px;
+ line-height: 1.35; text-overflow: ellipsis; white-space: nowrap;
+}
+.attachmentFailed .attachmentInfo small, .attachmentFailed .attachmentStatus { color: var(--color-danger); }
+.attachmentStatus { display: grid; place-items: center; color: var(--color-success); }
+.removeAttachment {
+ position: absolute; top: 4px; right: 4px; width: 21px; height: 21px;
+ display: grid; place-items: center; padding: 0; border: 0; border-radius: 6px;
+ background: transparent; color: var(--color-text-2); cursor: pointer;
+}
+.removeAttachment:hover { background: var(--color-hover); color: var(--color-text); }
+.dropNotice {
+ padding: 8px; border: 1px dashed var(--color-primary); border-radius: 9px;
+ color: var(--color-primary); text-align: center; font-size: 12px; font-weight: 600;
+}
+.textarea {
+ border: none; outline: none; resize: none;
+ background: transparent;
+ font-family: var(--font-sans);
+ font-size: 16px; line-height: 1.5;
+ color: var(--color-text);
+ max-height: 180px;
+ padding: 4px 4px 0;
+}
+.textarea::placeholder { color: var(--color-text-2); }
+.toolbar { display: flex; align-items: center; justify-content: space-between; }
+.tools { display: flex; align-items: center; gap: 2px; }
+.hiddenInput { display: none; }
+.attachmentError { margin: 0 4px; color: var(--color-danger); font-size: 11px; }
+.send {
+ flex: 0 0 auto;
+ width: 34px; height: 34px;
+ display: grid; place-items: center;
+ border: none; border-radius: var(--radius-pill);
+ background: var(--color-border);
+ color: #fff;
+ cursor: not-allowed;
+ transition: background var(--dur-hover) var(--ease), opacity var(--dur-hover) var(--ease);
+}
+.on { background: var(--color-text); cursor: pointer; }
+.on:hover { opacity: .85; }
+.spin { animation: spin .85s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.hint { text-align: center; font-size: 12px; color: var(--color-text-2); margin: 8px 0 0; }

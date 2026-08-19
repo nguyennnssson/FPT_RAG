@@ -1,0 +1,24 @@
+.wrap {
+  background: var(--color-code-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 0 0 var(--space-4);
+}
+.bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, .04);
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+.lang { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #94A3B8; }
+.copy {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; color: #CBD5E1;
+  background: transparent; border: none; cursor: pointer; padding: 2px 4px; border-radius: 6px;
+}
+.copy:hover { color: #fff; }
+.pre {
+  margin: 0; padding: 14px 16px;
+  font-family: var(--font-mono); font-size: 13.5px; line-height: 1.6;
+  color: var(--color-code-fg); overflow-x: auto;
+}

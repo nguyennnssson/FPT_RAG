@@ -1,0 +1,39 @@
+# FPT RAG — full project dependencies (backend).
+#
+# Everything here is loaded LAZILY by the rag/* package: it imports and its pure
+# logic runs with NONE of these installed, falling back to in-memory / heuristic
+# backends. Install to activate the real components. On the company VDI, install
+# whatever the guardrails allow and drive the rest through the API backends
+# (RAG_EMBEDDER_BACKEND=openai, RAG_LLM_PROVIDER=openai) which need no local models.
+
+# --- Embeddings & reranking (BGE-M3 + bge-reranker-v2-m3) ---
+sentence-transformers>=2.7.0
+# FlagEmbedding>=1.2.10          # alternative BGE-M3 / reranker backend
+transformers>=4.40.0            # token-accurate length caps
+torch>=2.2.0                    # CPU or CUDA build
+
+# --- Vector store & keyword index ---
+chromadb>=0.5.0
+rank-bm25>=0.2.2
+
+# --- Bilingual analysis (VI / EN) ---
+pyvi>=0.1.1                     # Vietnamese word segmentation for BM25
+nltk>=3.8.1                    # Porter stemmer for English BM25
+langdetect>=1.0.9             # language detection (heuristic fallback if absent)
+
+# --- Cache & session memory ---
+redis>=5.0.0
+
+# --- LLM generation (pluggable providers) ---
+openai>=1.40.0                 # OpenAI or OpenAI-compatible gateway (aiportalapi)
+anthropic>=0.40.0              # optional: Claude provider
+
+# --- Document parsing (ingest CLI: .docx / .pptx / .html / .pdf) ---
+python-docx>=1.1.0             # .docx
+python-pptx>=1.0.0             # .pptx
+beautifulsoup4>=4.12.0        # .html
+pypdf>=4.0.0                   # .pdf   (.txt/.md/.csv need no extra deps)
+
+# --- API service ---
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0

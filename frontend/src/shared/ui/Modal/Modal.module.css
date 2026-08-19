@@ -1,0 +1,36 @@
+.overlay {
+ position: fixed;
+ inset: 0;
+ z-index: var(--z-drawer);
+ background: rgba(17, 24, 39, .35);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ padding: var(--space-4);
+ animation: fade var(--dur-fade) var(--ease);
+}
+.dialog {
+ max-width: 92vw;
+ max-height: 86vh;
+ background: var(--color-surface);
+ border: 1px solid var(--color-border);
+ border-radius: var(--radius-lg);
+ box-shadow: var(--shadow-md);
+ display: flex;
+ flex-direction: column;
+}
+.header {
+ display: flex;
+ align-items: center;
+ gap: var(--space-3);
+ padding: 16px 12px 12px 20px;
+}
+.title { flex: 1; font-size: 17px; font-weight: 600; }
+.body { padding: 4px 20px 16px; overflow-y: auto; }
+.footer {
+ display: flex;
+ justify-content: flex-end;
+ gap: var(--space-2);
+ padding: 12px 20px 20px;
+}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }

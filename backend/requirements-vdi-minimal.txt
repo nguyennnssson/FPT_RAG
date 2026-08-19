@@ -1,0 +1,64 @@
+# ============================================================================
+# FPT RAG — SLIM / VDI profile (NO local models, NO torch).
+# ============================================================================
+# Use this when the VDI blocks large downloads or has no GPU. Embeddings AND
+# generation run through the OpenAI-compatible aiportalapi gateway, so no BGE-M3
+# / reranker weights are needed.
+#
+#   pip install -r requirements-vdi-minimal.txt
+#
+# Then set in .env (see requirements.txt step 2B for the full list):
+#   RAG_EMBEDDER_BACKEND=openai
+#   RAG_EMBEDDING_API_BASE_URL=https://<aiportalapi-host>/v1
+#   RAG_EMBEDDING_DIM=1536
+#   RAG_LLM_PROVIDER=openai
+#   RAG_LLM_BASE_URL=https://<aiportalapi-host>/v1
+#   RAG_LLM_MODEL=gpt-4o-mini
+#   OPENAI_API_KEY=<aiportalapi key>
+#
+# What you give up vs. the full profile:
+#   - The cross-encoder reranker is unavailable -> the pipeline uses the lexical
+#     fallback reranker. Retrieval still works (dense + BM25 + RRF); ranking
+#     precision is lower. Add sentence-transformers + torch later if the VDI
+#     allows it to restore bge-reranker-v2-m3.
+#   - Token length caps use a heuristic instead of the real tokenizer.
+# ============================================================================
+
+# API service
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.6.0,<3.0.0
+httpx>=0.27.0,<1.0.0
+python-multipart>=0.0.9
+
+# Chat history + long-term memory (PostgreSQL in production, SQLite in tests).
+SQLAlchemy>=2.0.30,<3.0.0
+alembic>=1.13.2,<2.0.0
+psycopg[binary]>=3.2.0,<4.0.0
+
+# Vector store + keyword index (no torch)
+chromadb>=0.5.0
+rank-bm25>=0.2.2
+
+# Embeddings + LLM via aiportalapi (OpenAI-compatible)
+openai>=1.40.0
+anthropic>=0.40.0
+
+# Bilingual analysis + language detection
+pyvi>=0.1.1
+nltk>=3.8.1
+langdetect>=1.0.9
+
+# Cache + session memory — serverless by default; Redis client is included so
+# the optional enterprise Redis backend can be enabled without reinstalling.
+redis>=5.0.0
+
+# Document parsing (ingest)
+python-docx>=1.1.0
+python-pptx>=1.0.0
+beautifulsoup4>=4.12.0
+pypdf>=6.15.0
+PyMuPDF>=1.24.0
+Pillow>=10.0.0
+pytesseract>=0.3.13
+

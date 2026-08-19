@@ -1,0 +1,113 @@
+# ============================================================================
+# FPT RAG — BACKEND DEPENDENCIES  +  "WHAT TO DO ON THE COMPANY VDI" PLAYBOOK
+# ============================================================================
+#
+# The rag/* package imports and runs its pure logic with NONE of these installed
+# (it falls back to in-memory / heuristic / extractive backends). You install
+# deps to turn those fallbacks into the real components.
+#
+# TWO install profiles:
+#   • requirements.txt              (this file) — FULL: local BGE-M3 + reranker.
+#                                    Needs ~4 GB of Hugging Face model downloads
+#                                    and a torch build.
+#   • requirements-vdi-minimal.txt  — SLIM: NO local models. Embeddings + LLM go
+#                                    through the OpenAI-compatible aiportalapi
+#                                    gateway. Best when the VDI blocks big
+#                                    downloads or has no GPU.
+#
+# ----------------------------------------------------------------------------
+# AFTER YOU PUSH THE CODE TO THE VDI — do this, in order:
+# ----------------------------------------------------------------------------
+# 1. Find out what the VDI allows:
+#      - Can you `pip install` from PyPI, or only an internal mirror?
+#      - Can the box reach huggingface.co for model downloads (~4 GB)?
+#      - Is there a GPU?  python -c "import torch; print(torch.cuda.is_available())"
+#      - What is the aiportalapi base URL + API key?
+#        (No Redis needed — cache is in-process, session memory is SQLite.)
+#
+# 2. Pick a profile:
+#      A) Downloads allowed & disk/GPU ok  ->  pip install -r requirements.txt
+#      B) Downloads blocked / no GPU       ->  pip install -r requirements-vdi-minimal.txt
+#         then in .env set:
+#           RAG_EMBEDDER_BACKEND=openai
+#           RAG_EMBEDDING_API_BASE_URL=https://<aiportalapi-host>/v1
+#           RAG_EMBEDDING_DIM=1536             # match the API embedding model
+#           RAG_LLM_PROVIDER=openai
+#           RAG_LLM_BASE_URL=https://<aiportalapi-host>/v1
+#           RAG_LLM_MODEL=gpt-4o-mini
+#           OPENAI_API_KEY=<aiportalapi key>
+#      C) Air-gapped: mirror the wheels internally; for profile A also pre-download
+#         the BGE-M3 + reranker snapshots and point RAG_EMBEDDING_MODEL /
+#         RAG_RERANKER_MODEL at the local paths.
+#
+# 3. Configure:   cp .env.example .env   and fill in the values.
+#
+# 4. Verify offline first (no models/keys needed):
+#      python tests/run_all.py
+#      python eval/security_pass.py
+#
+# 5. Establish the REAL eval baseline once models/LLM are reachable:
+#      python eval/evaluate.py --real --update-baseline
+#
+# 6. Run it:
+#      uvicorn api.main:app --host 0.0.0.0 --port 8000
+#      # or the whole stack:  docker compose up --build
+#
+# 7. Production hardening (see .env.example / api/auth.py):
+#      RAG_ALLOW_BODY_IDENTITY=false         # trust only SSO proxy headers
+#      RAG_PROXY_SHARED_SECRET=<secret>      # must match nginx X-Proxy-Secret
+#      RAG_ADMIN_PRINCIPALS=group:rag-admin  # who may ingest/delete
+#      RAG_CORS_ORIGINS=https://<frontend>
+#      (cache/memory are serverless — nothing to provision)
+# ============================================================================
+
+
+# ---- MANDATORY: API service ------------------------------------------------
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.6.0,<3.0.0
+httpx>=0.27.0,<1.0.0
+python-multipart>=0.0.9
+
+# ---- CHAT HISTORY + LONG-TERM MEMORY ---------------------------------------
+# PostgreSQL is the production system of record. SQLAlchemy keeps the same
+# repository testable with SQLite when running the offline suite.
+SQLAlchemy>=2.0.30,<3.0.0
+alembic>=1.13.2,<2.0.0
+psycopg[binary]>=3.2.0,<4.0.0
+
+# ---- MANDATORY: vector store + keyword index -------------------------------
+chromadb>=0.5.0                # persistent dense store (pip-only, no torch)
+rank-bm25>=0.2.2              # keyword index (pure python; heuristic fallback if absent)
+
+# ---- LOCAL MODELS (profile A only — OMIT on a slim VDI) --------------------
+# Local BGE-M3 embedder + bge-reranker-v2-m3. Large; pulls torch (~2 GB).
+sentence-transformers>=2.7.0
+transformers>=4.40.0          # also gives token-accurate query length caps
+torch>=2.2.0                   # CPU wheel by default; see pytorch.org for CUDA
+# FlagEmbedding>=1.2.10        # alternative BGE-M3 / reranker backend
+
+# ---- LLM + API-embedding backend (profile B / aiportalapi) -----------------
+openai>=1.40.0                 # OpenAI-compatible generator AND embedder (aiportalapi)
+anthropic>=0.40.0              # Claude provider
+
+# ---- Bilingual analysis (VI / EN) — recommended (heuristic fallback if absent)
+pyvi>=0.1.1                    # Vietnamese word segmentation for BM25
+nltk>=3.8.1                   # English Porter stemmer for BM25
+langdetect>=1.0.9            # language detection
+
+# ---- Cache + session memory — SERVERLESS by default (no dependency) ---------
+# Caching runs in-process and session memory uses stdlib SQLite. No Redis needed.
+# Only if the enterprise later approves Redis (RAG_CACHE_BACKEND=redis /
+# RAG_MEMORY_BACKEND=redis), install:
+redis>=5.0.0
+
+# ---- Document parsing (ingest CLI) -----------------------------------------
+python-docx>=1.1.0            # .docx
+python-pptx>=1.0.0            # .pptx
+beautifulsoup4>=4.12.0       # .html
+pypdf>=6.15.0                 # .pdf     (.txt/.md/.csv need no extra deps)
+PyMuPDF>=1.24.0               # render scanned PDF pages for OCR
+Pillow>=10.0.0                # normalize uploaded/embedded images
+pytesseract>=0.3.13           # local OCR bridge (also install the Tesseract runtime)
+
