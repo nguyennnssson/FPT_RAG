@@ -1,6 +1,6 @@
 # FPT RAG Workspace
 
-Bilingual Vietnamese/English retrieval-augmented generation workspace with a
+Bilingual retrieval-augmented generation workspace with a
 FastAPI backend and a React/Vite frontend.
 
 ## Prerequisites
